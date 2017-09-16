@@ -102,22 +102,7 @@ void TeclasEspeciais(int tecla, int x, int y) {
 			cameraX_min -= 1.0;
 		//}
 		break;
-		/*
-		case GLUT_KEY_UP:
-		bolado.setTransY(0.1);
-		break;
-		case GLUT_KEY_DOWN:
-		bolado.setTransY(-0.1);
-		break;
-		case GLUT_KEY_PAGE_DOWN:
-		bolado.setEscx (-0.2);
-		bolado.setEscy (-0.2);
-		break;
-		case GLUT_KEY_PAGE_UP:
-		bolado.setEscx (0.2);
-		bolado.setEscy (0.2);
-		break;
-		*/
+		
 	}
 	glutPostRedisplay();
 }
