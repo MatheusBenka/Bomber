@@ -1,4 +1,5 @@
 #pragma once
+#include "queraveis.h"
 class Jogador {
 private:
 	int posicaoX_min, posicaoX_max, posicaoY_max, posicaoY_min, moviX, moviY;
@@ -34,7 +35,7 @@ public:
 	}
 	
 
-	void colisao() {
+	void colisao(bloquinhoQuebravel parede) {
 		
 	
 	}

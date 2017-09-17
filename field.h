@@ -71,12 +71,11 @@ public:
 
 	}
 	
-	void desenharBordas(int cameraX_min, int cameraX_max) {
+	void desenharBordas() {
 		int i;
 
 
 		//borda esquerda	
-		if (cameraX_min<10) {
 			glColor3f(0.9, 0.9, 0.9);
 			glBegin(GL_QUADS);
 			glVertex2f(0, 0);
@@ -93,7 +92,7 @@ public:
 				glVertex2f(10, i);
 				glEnd();
 			}
-		}
+		
 
 
 		//borda cima
@@ -132,9 +131,7 @@ public:
 			glEnd();
 		}
 
-		if (cameraX_max>300) {
-
-
+		
 			glColor3f(0.9, 0.9, 0.9);
 			glBegin(GL_QUADS);
 			glVertex2f(300, 0);
@@ -144,7 +141,6 @@ public:
 			glEnd();
 
 			for (i = 130; i >= 10; i -= 10) {
-				//printf("desenhando i %d linhas\n",i);
 				glColor3f(0.0, 0.0, 0.0);
 				glBegin(GL_LINES);
 				glLineWidth(100);
@@ -153,38 +149,29 @@ public:
 				glEnd();
 			}
 
+}
+
+
+	void desenharQuebraveis(int faseAtual) {
+		switch(faseAtual){
+			case 0:
+				faseUm();
+				break;
+			case 1:
+				//faseDois();
+				break;
+			case 2:
+				//faseTres();
+				break;
 		}
-
-
-
-
-
-
-	}
-
-	void jogar() {
-		player.desenhaBoneco();
-	}
-
-	void setMoviX(int incrementoMovi) {
-		player.setMoviX(incrementoMovi);
-	}
-
-	void setMoviY(int incrementoMovi) {
-		player.setMoviY(incrementoMovi);
-	}
-
-	void desenharQuebraveis(int posicaoX,int posicaoY,int coordX,int coordY) {
-		Blocos[posicaoX][posicaoY].setInteiro(true);
-		Blocos[posicaoX][posicaoY].setando(coordX,coordY);
-		Blocos[posicaoX][posicaoY].desenhar();
+		
 	}
 
 
-	void reDesenharQuebraveis() {
+	void REdesenharQuebraveis() {
 		int i, j;
-		for (i = 0; i < 11; i++) {
-			for (j = 0; j < 29; j++) {
+		for (i = 0; i < 12; i++) {
+			for (j = 0; j < 30; j++) {
 				if (Blocos[i][j].getInteiro()) {
 					Blocos[i][j].desenhar();
 					
@@ -201,5 +188,39 @@ public:
 	
 	int getMatrizCampo(int x, int y){
 		return matrizCampo[x][y];
+	}
+	
+	Fixo getFixo(int x, int y){
+		return matrizFixos[i][j];
+	}
+	
+	void faseUm(){
+		int i,j,coordX,coordY;
+		int seguidos;
+		int auxRand;
+		
+			srand((unsigned)time(0));
+		for(i=1;i<12;i++){
+			for(j=1;j<30;j++){
+				if(i==1 && j==1){
+					continue;
+				}
+				if(i==2 && j == 1){
+					continue;
+				}
+				if(i%2 == 0 && j%2==0){
+					continue;
+				}
+				
+				auxRand = rand()%200;
+				if(auxRand%2 != 0){
+					coordY = 120 - (i*10);
+					coordX = j*10; 
+					Blocos[i][j].setInteiro(true);
+					Blocos[i][j].setando(coordX,coordY);
+					Blocos[i][j].desenhar();
+				}
+			}
+		}
 	}
 };
