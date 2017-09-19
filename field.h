@@ -2,6 +2,7 @@
 #include "quebraveis.h"
 #include "fixo.h"
 #include "jogador.h"
+#include "bomba.h"
 
 #include <time.h>
 
@@ -191,7 +192,7 @@ public:
 	}
 	
 	Fixo getFixo(int x, int y){
-		return matrizFixos[i][j];
+		return matrizFixos[x][y];
 	}
 	
 	void faseUm(){

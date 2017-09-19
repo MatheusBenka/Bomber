@@ -31,9 +31,9 @@ public :
 
 	void setando(int x, int y) {
 		mini_X = x;
-		mini_Y = y;
+		mini_Y = y - 10 ;
 		max_X = x + 10;
-		max_Y = y + 10;
+		max_Y = y;
 	}
 
 	void mostrarCoordenadas() {

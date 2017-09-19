@@ -15,7 +15,14 @@
 #define cameraY_max 130
 
 bool Inicio = true;
+/*
 
+bool blockTOP;
+bool blockDOWN;
+bool blockLEFT;
+bool blockRIGHT;
+
+*/
 
 int cameraX_min = 0;
 //max X 310
@@ -27,6 +34,7 @@ void jogo() {
 
 	glClearColor(0.0f, 0.6f, 0.0f, 0.7f);
 	glClear(GL_COLOR_BUFFER_BIT);
+	
 	//definindo coordenadas da matriz da tela
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();  // carrega matriz identidade
@@ -45,7 +53,7 @@ void jogo() {
 	
 	jojo.jojar();
 
-
+	//jojo.colisao(faseAtual,&blockTOP,&blockDOWN,&blockLEFT,&blockRIGHT);
 	glutSwapBuffers();
 }
 
@@ -81,20 +89,41 @@ void TeclasNormais(unsigned char tecla, int x, int y) {
 
 	case 'a':
 	case 'A':
-		jojo.setMoviX(-1);
+			jojo.setMoviX(-1);
+			if(jojo.colisaoBORDALeft(10)){
+				jojo.setMoviX(1);
+			}
+			
 		break;
 	case 'D':
 	case 'd':
-		jojo.setMoviX(1);
+			jojo.setMoviX(1);
+			if(jojo.colisaoBORDARight(300)){
+				jojo.setMoviX(-1);
+			}
 		break;
 	case 'w':
 	case 'W':
-		jojo.setMoviY(1);
+			jojo.setMoviY(1);
+			if(jojo.colisaoBORDATOP(120)){
+				jojo.setMoviY(-1);
+			}
 		break;
 	case 's':
 	case 'S':
-		jojo.setMoviY(-1);
+			jojo.setMoviY(-1);
+			if(jojo.colisaoBORDADOWN(10)){
+				jojo.setMoviY(1);
+			}
 		break;
+			
+			/*
+			case 'b':
+	case 'B':
+			jojo.dropBomb();
+		break;
+			
+			*/
 
 	}
 
