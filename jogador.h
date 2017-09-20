@@ -33,15 +33,19 @@ public:
 	void setMoviY(int incrementoMovi) {
 		moviY += incrementoMovi;
 	}
+	
 	int getMiniX(){
 		return posicaoX_min;
 	}
+	
 	int getMiniY(){
 		return posicaoY_min;
 	}
+	
 	int getMaxX(){
 		return posicaoX_max;
 	}
+	
 	int getMaxY(){
 		return posicaoY_max;
 	}
@@ -49,9 +53,11 @@ public:
 	int getMoviX(){
 		return moviX;
 	}
+	
 	int getMoviY(){
 		return moviY;
 	}
+	
 	int getLadoDireito(){
 		return posicaoX_max + moviX ;
 	}

@@ -16,15 +16,15 @@ public:
 		
 	}
 	void estourar(){
-	
+		viva = false;
 	}
 	void setando(int x,int y){
 		printf("entrando tbm\n");
 		posicaoX_min = x;
 		posicaoY_min = y;
-		posicaoX_max = x+10;
-		posicaoY_max = y+10;
-		
+		posicaoX_max = x+8;
+		posicaoY_max = y+8;
+		viva = true;
 	}
 	
 	bool getVivo(){

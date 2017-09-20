@@ -8,6 +8,7 @@ private :
 	Jogador player;
 	bool vivo;
 	Bomba bombinha;
+	int auxTempoBomba;
 public :
 	void desenharCenario(int faseAtual){
 		campoJogo[faseAtual].desenharBordas();
@@ -19,8 +20,12 @@ public :
 		campoJogo[faseAtual].desenharBordas();
 		campoJogo[faseAtual].desenharCenarioFixo();
 		campoJogo[faseAtual].REdesenharQuebraveis();
-		if(bombinha.getVivo()){
-			bombinha.desenha();
+		if(bombinha.getVivo() && auxTempoBomba>0){
+            bombinha.desenha();				
+			auxTempoBomba--;
+			glutPostRedisplay();
+		}else{
+			bombinha.estourar();
 		}
 	}
 	
@@ -35,8 +40,8 @@ public :
 	void setMoviY(int incrementoMovi) {
 		player.setMoviY(incrementoMovi);
 	}
-	
-	void colisao(int faseAtual, bool * top,bool * down,bool * left,bool * right){	
+
+	void colisaoFixos(int faseAtual, bool * top,bool * down,bool * left,bool * right){	
 		Fixo matriz [5][14];
 		int i,linha,coluna;
 				
@@ -61,9 +66,9 @@ public :
 		coluna = qualColunaTaOPlayer();
 				
 		
-		printf("linha : %d e coluna : %d\n",linha,coluna);  
+		//printf("linha : %d e coluna : %d\n",linha,coluna);  
 		if(linha >= 4){
-			printf("onde");
+			
 			*right = testarMoviLados(matriz[4][coluna]);
 			
 			*down = testarMoviHoriz(matriz[linha][coluna]);
@@ -76,7 +81,7 @@ public :
 		}else{
 			switch(linha){
 				case 0:		
-					printf("ta");
+					
 					*down = testarMoviHoriz(matriz[linha][coluna]);
 					*right = testarMoviLados(matriz[linha][coluna]);
 					*left = testarMoviLados(matriz[linha][coluna-1]);
@@ -96,8 +101,7 @@ public :
 						if(coluna==14){
 							*left = testarMoviLados(matriz[linha][coluna-1]);
 							break;
-						}else{
-							printf("entrado aqui");
+						}else{							
 							*left = testarMoviLados(matriz[linha][coluna-1]);
 							*right = testarMoviLados(matriz[linha][coluna]);	
 							*down = testarMoviHoriz(matriz[linha][coluna]);
@@ -112,6 +116,78 @@ public :
 		
 				
 	}
+	
+	void colisaoQuebraveis(int faseAtual, bool * top,bool * down,bool * left,bool * right){	
+		int matriz [31];
+		int i,linha,coluna;
+				
+		
+		linha = qualLinhaTaOPlayerCampoTodo();
+		coluna = qualColunaTaOPlayerCampoTodo();
+				
+		
+		printf("linha : %d coluna : %d\n",linha,coluna);  
+		
+		if(campoJogo[faseAtual].getMatrizCampo(linha,coluna+1) == 3 )
+			*right = true;
+		if(campoJogo[faseAtual].getMatrizCampo(linha,coluna-1)==3)
+			*left = true;
+		if(campoJogo[faseAtual].getMatrizCampo(linha+1,coluna)==3)
+			*down = true;
+		if(campoJogo[faseAtual].getMatrizCampo(linha-1,coluna)==3)
+			*top = true;
+		
+		/*
+		if(linha >= 4){
+			
+			*right = testarMoviLados(matriz[4][coluna]);
+			
+			*down = testarMoviHoriz(matriz[linha][coluna]);
+			*top = testarMoviHoriz(matriz[linha-1][coluna]);
+			if(coluna==14){
+							*left = testarMoviLados(matriz[linha][coluna-1]);
+			}else{
+				*left = testarMoviLados(matriz[4][coluna]);
+			}
+		}else{
+			switch(linha){
+				case 0:		
+					
+					*down = testarMoviHoriz(matriz[linha][coluna]);
+					*right = testarMoviLados(matriz[linha][coluna]);
+					*left = testarMoviLados(matriz[linha][coluna-1]);
+					break;
+				case 1:
+				case 2:
+				case 3:
+					
+					if(coluna==0){
+						*right = testarMoviLados(matriz[linha-1][coluna]);
+						*right = testarMoviLados(matriz[linha][coluna]);
+						*down = testarMoviHoriz(matriz[linha][coluna]);
+						*top = testarMoviHoriz(matriz[linha-1][coluna]);
+						
+						break;
+					}else{
+						if(coluna==14){
+							*left = testarMoviLados(matriz[linha][coluna-1]);
+							break;
+						}else{							
+							*left = testarMoviLados(matriz[linha][coluna-1]);
+							*right = testarMoviLados(matriz[linha][coluna]);	
+							*down = testarMoviHoriz(matriz[linha][coluna]);
+							*top = testarMoviHoriz(matriz[linha-1][coluna]);
+						}						
+					}
+					
+					break;
+			}
+		}
+			
+		*/
+				
+	}
+	
 	bool colisaoBORDALeft(int valor){
 		if(player.getMiniX() + player.getMoviX() <=valor ){
 			return true;
@@ -119,6 +195,7 @@ public :
 			return false;
 		}
 	}	
+	
 	bool colisaoBORDARight(int valor){
 		if(player.getMaxX() + player.getMoviX() >=valor){
 			return true;
@@ -126,6 +203,7 @@ public :
 			return false;
 		}
 	}
+	
 	bool colisaoBORDATOP(int valor){
 		if(player.getMaxY() + player.getMoviY()>=valor){
 			return true;
@@ -133,6 +211,7 @@ public :
 			return false;
 		}
 	}
+
 	bool colisaoBORDADOWN(int valor){
 		if(player.getMiniY() + player.getMoviY()<=valor ){
 			return true;
@@ -143,7 +222,8 @@ public :
 	
 	void dropBomb(){
 		
-		bombinha.setando(player.getMiniX(),player.getMiniY());
+		bombinha.setando(player.getLadoEsquerdo(),player.getBaixo());
+		auxTempoBomba = 150;
 	}
 	
 	int qualLinhaTaOPlayer(){
@@ -160,6 +240,7 @@ public :
 		if(player.getCima() <=20)
 			return 5;
 	}	
+
 	int qualColunaTaOPlayer(){
 		if(player.getLadoEsquerdo() <=30)
 			return 0;
@@ -193,11 +274,37 @@ public :
 			return 14;
 	}
 	
-	bool testarMoviHoriz(Fixo parede){
-		//printf("testando se ");
-		//printf(" isso : %d eh >= a %d\n",player.getLadoDireito(),parede.getMini_x()); 
-		//printf("tbm se isso : %d eh <= a %d\n",player.getLadoDireito(),parede.getMax_x()); 
+	int qualLinhaTaOPlayerCampoTodo(){
+		int i,j;
 		
+		if(player.getBaixo()>110 ){
+			return 1;	
+		}else{
+				for(i=100,j=2;i>10;i-=10,j++){
+					if(player.getBaixo()>i && player.getCima() <i+10){						
+							return j;
+					}		
+			}
+		}
+	
+	}
+	
+	int qualColunaTaOPlayerCampoTodo(){
+		int i,j;
+		
+		if(player.getLadoDireito()<20 ){
+			return 1;	
+		}else{
+				for(i=20,j=2;i<=290;i+=10,j++){
+					if(player.getLadoEsquerdo()>i && player.getLadoDireito() <i+10){						
+							return j;
+					}		
+			}
+		}
+	
+	}
+	
+	bool testarMoviHoriz(Fixo parede){
 		if(player.getLadoDireito()>=parede.getMini_x() && player.getLadoDireito()<=parede.getMax_x()){			
 			return true;	
 		}else{
@@ -222,33 +329,69 @@ public :
 		}
 		
 	}
+
 	int getPosiESQPlayer(){
 		return player.getLadoEsquerdo();
 	}
+	
 	int getPosiDIRPlayer(){
 		return player.getLadoDireito();
 	}
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+		/*
+		if(player.getLadoEsquerdo() >20 && player.getLadoDireito() <30)
+			return 1;
+		if(player.getLadoEsquerdo() > 30 && player.getLadoDireito() <=40)
+			return 2;
+		if(player.getLadoEsquerdo() > 40 && player.getLadoDireito() <=50)
+			return 3;
+		if(player.getLadoEsquerdo() > 50 && player.getLadoDireito() <=60)
+			return 4;
+		if(player.getLadoEsquerdo() > 60 && player.getLadoDireito() <=70)
+			return 5;
+		if(player.getLadoEsquerdo() > 70 && player.getLadoDireito() <=80)
+			return 6;
+		if(player.getLadoEsquerdo() > 80 && player.getLadoDireito() <=90)
+			return 7;
+		if(player.getLadoEsquerdo() > 90 && player.getLadoDireito() <=100)
+			return 8;
+		if(player.getLadoEsquerdo() > 100 && player.getLadoDireito() <=110)
+			return 9;
+		if(player.getLadoEsquerdo() > 110 && player.getLadoDireito() <=120)
+			return 10;
+		if(player.getLadoEsquerdo() > 120 && player.getLadoDireito() <=130)
+			return 11;
+		if(player.getLadoEsquerdo() > 130 && player.getLadoDireito() <=140)
+			return 12;
+		if(player.getLadoEsquerdo() > 140 && player.getLadoDireito() <=150)
+			return 13;
+		if(player.getLadoEsquerdo() > 150 && player.getLadoDireito() <=160)
+			return 14;
+		if(player.getLadoEsquerdo() > 160 && player.getLadoDireito() <=170)
+			return 15;
+		if(player.getLadoEsquerdo() > 180 && player.getLadoDireito() <=190)
+			return 16;
+		if(player.getLadoEsquerdo() > 190 && player.getLadoDireito() <=200)
+			return 17;
+		if(player.getLadoEsquerdo() > 200 && player.getLadoDireito() <=210)
+			return 18;
+		if(player.getLadoEsquerdo() > 210 && player.getLadoDireito() <=220)
+			return 19;
+		if(player.getLadoEsquerdo() > 220 && player.getLadoDireito() <=230)
+			return 20;
+		if(player.getLadoEsquerdo() > 230 && player.getLadoDireito() <=240)
+			return 21;
+		if(player.getLadoEsquerdo() > 240 && player.getLadoDireito() <=250)
+			return 22;
+		if(player.getLadoEsquerdo() > 250 && player.getLadoDireito() <=260)
+			return 23;
+		if(player.getLadoEsquerdo() > 260 && player.getLadoDireito() <=270)
+			return 24;
+		if(player.getLadoEsquerdo() > 270 && player.getLadoDireito() <=280)
+			return 26;
+		if(player.getLadoEsquerdo() > 280 && player.getLadoDireito() <=290)
+			return 26;
+		if(player.getLadoEsquerdo() > 290)
+			return 28;
+			*/
+		

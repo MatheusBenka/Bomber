@@ -37,6 +37,7 @@ public:
 			matrizCampo[i][30] = 8;
 		}	
 	}
+	
 	void desenharCenarioFixo() {
 		int auxX, auxY;
 		auxY = 110;
@@ -52,7 +53,7 @@ public:
 			auxY -= 20;
 
 		}
-		mostrarMatrizCampo();
+		//mostrarMatrizCampo();
 		
 	}
 	
@@ -151,7 +152,6 @@ public:
 
 }
 
-
 	void desenharQuebraveis(int faseAtual) {
 		switch(faseAtual){
 			case 0:
@@ -166,7 +166,6 @@ public:
 		}
 		
 	}
-
 
 	void REdesenharQuebraveis() {
 		int i, j;
@@ -221,6 +220,7 @@ public:
 					coordY = 120 - (i*10);
 					coordX = j*10; 
 					Blocos[i][j].setInteiro(true);
+					matrizCampo[i][j] = 3;
 					Blocos[i][j].setando(coordX,coordY);
 					Blocos[i][j].desenhar();
 				}
