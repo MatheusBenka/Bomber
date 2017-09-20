@@ -1,5 +1,5 @@
 #pragma once
-#include "queraveis.h"
+#include "quebraveis.h"
 class Jogador {
 private:
 	int posicaoX_min, posicaoX_max, posicaoY_max, posicaoY_min, moviX, moviY;
@@ -51,5 +51,21 @@ public:
 	}
 	int getMoviY(){
 		return moviY;
+	}
+	int getLadoDireito(){
+		return posicaoX_max + moviX ;
+	}
+	
+	int getLadoEsquerdo(){
+		return posicaoX_min + moviX ;
+	}
+	
+	int getCima(){
+		return posicaoY_max +moviY;
+	}
+	
+	
+	int getBaixo(){
+		return posicaoY_min +moviY;
 	}
 };

@@ -15,14 +15,11 @@
 #define cameraY_max 130
 
 bool Inicio = true;
-/*
+bool blockTOP = false;
+bool blockDOWN = false;
+bool blockLEFT = false;
+bool blockRIGHT = false;
 
-bool blockTOP;
-bool blockDOWN;
-bool blockLEFT;
-bool blockRIGHT;
-
-*/
 
 int cameraX_min = 0;
 //max X 310
@@ -53,10 +50,16 @@ void jogo() {
 	
 	jojo.jojar();
 
-	//jojo.colisao(faseAtual,&blockTOP,&blockDOWN,&blockLEFT,&blockRIGHT);
 	glutSwapBuffers();
 }
 
+void resetarBlocks(){
+	blockTOP =false;	
+	blockDOWN = false;
+    blockLEFT = false;
+    blockRIGHT = false;
+
+}
 void TeclasEspeciais(int tecla, int x, int y) {
 
 	switch (tecla) {
@@ -80,6 +83,7 @@ void TeclasEspeciais(int tecla, int x, int y) {
 
 
 void TeclasNormais(unsigned char tecla, int x, int y) {
+	jojo.colisao(faseAtual,&blockTOP,&blockDOWN,&blockLEFT,&blockRIGHT);
 	switch (tecla) {
 	case 27:
 		cameraX_max = 150.0f;
@@ -89,31 +93,54 @@ void TeclasNormais(unsigned char tecla, int x, int y) {
 
 	case 'a':
 	case 'A':
-			jojo.setMoviX(-1);
-			if(jojo.colisaoBORDALeft(10)){
-				jojo.setMoviX(1);
+			if(!blockLEFT){
+				jojo.setMoviX(-1);
+				if(jojo.colisaoBORDALeft(10)){
+					jojo.setMoviX(1);
+				}else{
+				//if(jojo.getPosiESQPlayer()<220 && jojo.getPosiESQPlayer()>85){
+				//	cameraX_max -= 1.0;
+			//		cameraX_min -= 1.0;
+				//} 
+					
+				}
 			}
+			
 			
 		break;
 	case 'D':
 	case 'd':
+			if(!blockRIGHT){
 			jojo.setMoviX(1);
 			if(jojo.colisaoBORDARight(300)){
 				jojo.setMoviX(-1);
+			}else{
+				if(jojo.getPosiDIRPlayer()>75 && jojo.getPosiDIRPlayer()<235){
+					cameraX_max += 1.0;
+						cameraX_min += 1.0;
+				} 
+				
+			}
 			}
 		break;
 	case 'w':
 	case 'W':
+			if(!blockTOP){
 			jojo.setMoviY(1);
 			if(jojo.colisaoBORDATOP(120)){
 				jojo.setMoviY(-1);
 			}
+			}
 		break;
+				
 	case 's':
 	case 'S':
+			if(!blockDOWN){
+				
 			jojo.setMoviY(-1);
 			if(jojo.colisaoBORDADOWN(10)){
 				jojo.setMoviY(1);
+			}
 			}
 		break;
 			
@@ -127,7 +154,7 @@ void TeclasNormais(unsigned char tecla, int x, int y) {
 
 	}
 
-
+resetarBlocks();
 
 	glutPostRedisplay();
 

@@ -17,8 +17,7 @@ public:
 
 	campinho() {
 		int i, j;
-		matrizCampo[1][1] =1;
-		printf("isso\n");
+		matrizCampo[1][1] =1;		
 		for (i = 2; i < 12; i++) {
 			for (j = 2; j < 30; j++) {
 				if (i%2 == 0 && j % 2 == 0) {
@@ -40,7 +39,7 @@ public:
 	}
 	void desenharCenarioFixo() {
 		int auxX, auxY;
-		auxY = 20;
+		auxY = 110;
 		int i, j;
 		for (i = 0; i<5; i++) {
 			auxX = 20;
@@ -50,7 +49,7 @@ public:
 				auxX += 20;
 			}
 
-			auxY += 20;
+			auxY -= 20;
 
 		}
 		mostrarMatrizCampo();
@@ -192,6 +191,10 @@ public:
 	}
 	
 	Fixo getFixo(int x, int y){
+		return matrizFixos[x][y];
+	}
+	
+	Fixo getLinhaFixo(int x,int y){
 		return matrizFixos[x][y];
 	}
 	
