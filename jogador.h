@@ -75,3 +75,5 @@ public:
 		return posicaoY_min +moviY;
 	}
 };
+
+//criar sprites

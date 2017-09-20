@@ -31,3 +31,5 @@ public:
 		return viva;
 	}
 };
+
+//fazer animacao
