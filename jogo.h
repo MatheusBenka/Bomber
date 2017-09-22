@@ -26,11 +26,24 @@ public :
 			glutPostRedisplay();
 		}else{
 			bombinha.estourar();
+			campoJogo[faseAtual].quebrar(bombinha.getLinha(),bombinha.getColuna());
+			player.setVida(morrer());
+			bombinha.Coordenadas(0,0);
+			
 		}
 	}
 	
-	void jojar() {
+	bool jojar() {
 		player.desenhaBoneco();
+		return player.getVida();
+	}
+	
+	bool morrer(){
+		if(bombinha.getLinha() == qualLinhaTaOPlayerCampoTodo() && bombinha.getColuna() ==  qualColunaTaOPlayerCampoTodo()){
+			return true;
+		}else{
+			return false;
+		}
 	}
 	
 	void setMoviX(int incrementoMovi) {
@@ -62,8 +75,8 @@ public :
 		}
 		
 		
-		linha = qualLinhaTaOPlayer();
-		coluna = qualColunaTaOPlayer();
+		linha = qualLinhaFixosTaOPlayer();
+		coluna = qualColunaFixosTaOPlayer();
 				
 		
 		//printf("linha : %d e coluna : %d\n",linha,coluna);  
@@ -125,8 +138,8 @@ public :
 		linha = qualLinhaTaOPlayerCampoTodo();
 		coluna = qualColunaTaOPlayerCampoTodo();
 				
-		
-		printf("linha : %d coluna : %d\n",linha,coluna);  
+		//resolver linha e coluna 0 0
+		printf("eh daqui linha : %d coluna : %d\n",linha,coluna);  
 		
 		if(campoJogo[faseAtual].getMatrizCampo(linha,coluna+1) == 3 )
 			*right = true;
@@ -136,55 +149,6 @@ public :
 			*down = true;
 		if(campoJogo[faseAtual].getMatrizCampo(linha-1,coluna)==3)
 			*top = true;
-		
-		/*
-		if(linha >= 4){
-			
-			*right = testarMoviLados(matriz[4][coluna]);
-			
-			*down = testarMoviHoriz(matriz[linha][coluna]);
-			*top = testarMoviHoriz(matriz[linha-1][coluna]);
-			if(coluna==14){
-							*left = testarMoviLados(matriz[linha][coluna-1]);
-			}else{
-				*left = testarMoviLados(matriz[4][coluna]);
-			}
-		}else{
-			switch(linha){
-				case 0:		
-					
-					*down = testarMoviHoriz(matriz[linha][coluna]);
-					*right = testarMoviLados(matriz[linha][coluna]);
-					*left = testarMoviLados(matriz[linha][coluna-1]);
-					break;
-				case 1:
-				case 2:
-				case 3:
-					
-					if(coluna==0){
-						*right = testarMoviLados(matriz[linha-1][coluna]);
-						*right = testarMoviLados(matriz[linha][coluna]);
-						*down = testarMoviHoriz(matriz[linha][coluna]);
-						*top = testarMoviHoriz(matriz[linha-1][coluna]);
-						
-						break;
-					}else{
-						if(coluna==14){
-							*left = testarMoviLados(matriz[linha][coluna-1]);
-							break;
-						}else{							
-							*left = testarMoviLados(matriz[linha][coluna-1]);
-							*right = testarMoviLados(matriz[linha][coluna]);	
-							*down = testarMoviHoriz(matriz[linha][coluna]);
-							*top = testarMoviHoriz(matriz[linha-1][coluna]);
-						}						
-					}
-					
-					break;
-			}
-		}
-			
-		*/
 				
 	}
 	
@@ -223,10 +187,12 @@ public :
 	void dropBomb(){
 		
 		bombinha.setando(player.getLadoEsquerdo(),player.getBaixo());
+		bombinha.Coordenadas(qualColunaTaOPlayerCampoTodo(),qualLinhaTaOPlayerCampoTodo());
+		bombinha.MostrarCoordenadas();
 		auxTempoBomba = 150;
 	}
 	
-	int qualLinhaTaOPlayer(){
+	int qualLinhaFixosTaOPlayer(){
 		if(player.getCima() >=100)			
 			return 0;
 		if(player.getCima() < 100 && player.getCima() >=80)
@@ -241,7 +207,15 @@ public :
 			return 5;
 	}	
 
-	int qualColunaTaOPlayer(){
+	int qualColunaFixosTaOPlayer(){
+		int i,j;
+		
+		for(i=30,j=0;i<300;i+=20,j++){
+			if(player.getLadoEsquerdo() <=i)
+				return j;
+		}
+		//acho q melhorou kkkk
+		/*
 		if(player.getLadoEsquerdo() <=30)
 			return 0;
 		if(player.getLadoEsquerdo() >30 && player.getLadoEsquerdo() <=50)
@@ -272,16 +246,17 @@ public :
 			return 13;
 		if(player.getLadoEsquerdo() > 290)
 			return 14;
+		*/
 	}
 	
 	int qualLinhaTaOPlayerCampoTodo(){
 		int i,j;
 		
-		if(player.getBaixo()>110 ){
+		if(player.getCima()>=110 ){
 			return 1;	
 		}else{
 				for(i=100,j=2;i>10;i-=10,j++){
-					if(player.getBaixo()>i && player.getCima() <i+10){						
+					if(player.getBaixo()>=i && player.getCima() <=i+10){						
 							return j;
 					}		
 			}

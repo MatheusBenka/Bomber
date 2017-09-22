@@ -2,6 +2,7 @@
 class Bomba{
 private:
 	int posicaoX_min, posicaoX_max, posicaoY_max, posicaoY_min;
+	int linha,coluna;
 	bool viva;
 public:
 	void desenha() {
@@ -26,9 +27,22 @@ public:
 		posicaoY_max = y+8;
 		viva = true;
 	}
+	void Coordenadas(int x,int y){
+		linha = y;
+		coluna = x;
+	}
+	int getLinha(){
+		return linha;
+	}
+	int getColuna(){
+		return coluna;
+	}
 	
 	bool getVivo(){
 		return viva;
+	}
+	void MostrarCoordenadas(){
+		printf("linha %d coluna %d",linha,coluna);
 	}
 };
 

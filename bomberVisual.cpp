@@ -27,6 +27,7 @@ int cameraX_max = 150;
 Jogo jojo;
 int faseAtual = 0;
 int auxVoltas;
+bool morreu = false;
 
 void jogo() {
 	
@@ -38,8 +39,7 @@ void jogo() {
 	glLoadIdentity();  // carrega matriz identidade
 	gluOrtho2D(cameraX_min, cameraX_max, cameraY_min , cameraY_max); // definindo os tamanhos
 	
-	//auxVoltas++;
-	//printf("volta : %d\n",auxVoltas);
+	if(!morreu){
 	if (Inicio) {
 		jojo.desenharCenario(faseAtual);
 		Inicio = false;
@@ -50,10 +50,24 @@ void jogo() {
 		
 	}
 	
-	jojo.jojar();
-
+	morreu = jojo.jojar();
+		
+	}else{
+		glColor3f(0.0, 0.0, 0.0);
+		glBegin(GL_QUADS);
+		glVertex2f(0,70);
+		glVertex2f(0, 100);
+		glVertex2f(290,100);
+		glVertex2f(290, 70);
+		glEnd();
+		
+	}
+	if(morreu){
+		glutPostRedisplay(); 	
+	}
 	glutSwapBuffers();
 }
+
 
 void resetarBlocks(){
 	blockTOP = false;	
@@ -63,28 +77,34 @@ void resetarBlocks(){
 
 }
 void TeclasEspeciais(int tecla, int x, int y) {
+	if(!morreu){
+		switch (tecla) {
 
-	switch (tecla) {
-
-	case GLUT_KEY_RIGHT:
-		if (cameraX_max<310) {
-			cameraX_max += 1.0;
-			cameraX_min += 1.0;
-		}
-		break;
-	case GLUT_KEY_LEFT:
-		if (cameraX_min>0) {
-			cameraX_max -= 1.0;
-			cameraX_min -= 1.0;
-		}
-		break;
+			case GLUT_KEY_RIGHT:
+				if (cameraX_max<310) {
+					cameraX_max += 1.0;
+					cameraX_min += 1.0;
+				}
+				break;
 		
+			case GLUT_KEY_LEFT:
+				if (cameraX_min>0) {
+				cameraX_max -= 1.0;
+				cameraX_min -= 1.0;
+				}
+			break;
+		
+		}
+		glutPostRedisplay();
+	
 	}
-	glutPostRedisplay();
+	
 }
 
 
 void TeclasNormais(unsigned char tecla, int x, int y) {
+
+	if(!morreu){
 	jojo.colisaoFixos(faseAtual,&blockTOP,&blockDOWN,&blockLEFT,&blockRIGHT);
 	jojo.colisaoQuebraveis(faseAtual,&blockTOP,&blockDOWN,&blockLEFT,&blockRIGHT);
 	switch (tecla) {
@@ -155,10 +175,10 @@ void TeclasNormais(unsigned char tecla, int x, int y) {
 
 	}
 
-resetarBlocks();
+	resetarBlocks();
 
 	glutPostRedisplay();
-
+	}
 }
 
 

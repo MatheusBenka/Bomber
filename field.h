@@ -167,6 +167,19 @@ public:
 		
 	}
 
+	void quebrar(int linha,int coluna){
+		Blocos[linha][coluna+1].setInteiro(false); 
+		matrizCampo[linha][coluna+1] = 0;
+		
+		Blocos[linha][coluna-1].setInteiro(false); 
+		matrizCampo[linha][coluna-1] = 0;
+		
+		Blocos[linha+1][coluna].setInteiro(false); 
+		matrizCampo[linha+1][coluna] = 0;
+		
+		Blocos[linha-1][coluna].setInteiro(false); 
+		matrizCampo[linha-1][coluna] = 0;
+	}
 	void REdesenharQuebraveis() {
 		int i, j;
 		for (i = 0; i < 12; i++) {
@@ -178,7 +191,7 @@ public:
 			}
 
 		}
-		mostrarMatrizCampo();
+		//mostrarMatrizCampo();
 	}
 	
 	void setValorMatrizCampo(int x,int y,int valor){
@@ -229,4 +242,4 @@ public:
 	}
 };
 
-//criar mais fases
+//criar mais fases // talvez....
