@@ -3,6 +3,7 @@
 #include "fixo.h"
 #include "jogador.h"
 #include "bomba.h"
+#include "inimigo.h"
 
 #include <time.h>
 
@@ -13,6 +14,7 @@ private:
 	Fixo matrizFixos[5][14];
 	bloquinhoQuebravel Blocos[13][31];
 	Jogador player;
+	Inimigo doMal[5];
 public:
 
 	campinho() {
@@ -151,22 +153,91 @@ public:
 			}
 
 }
-
-	void desenharQuebraveis(int faseAtual) {
-		switch(faseAtual){
-			case 0:
-				faseUm();
-				break;
-			case 1:
-				//faseDois();
-				break;
-			case 2:
-				//faseTres();
-				break;
+	
+	void gerarInimigos(){
+		int i,j;
+		
+		for(i=14,j=0;i<30;i++){
+			srand((unsigned)time(0));
+			if(rand()%5 == 3){
+				doMal[j].setando(110,j*10,1,j);
+				break; 	
+			}
+		}
+		
+		
+	}
+	
+	void gerarQuebraveis() {
+		int i,j,coordX,coordY;
+		int seguidos;
+		int auxRand;
+		
+			srand((unsigned)time(0));
+		for(i=1;i<12;i++){
+			for(j=1;j<30;j++){
+				//nao criar quebravel no lugar onde inicia o player
+				if(i==1 && j==1){
+					continue;
+				}
+				//nao criar quebravel no na coluna abaxo do lugar onde inicia o player
+				if(i==2 && j == 1){
+					continue;
+				}
+				//nao criar quebravel no na coluna a frente do lugar onde inicia o player
+				if(i==1 && j==2){
+					continue;
+				}
+				//nao criar quebraveis onde tem fixos
+				if(i%2 == 0 && j%2==0){
+					continue;
+				}
+				
+				//nao criar quebraveis onde tem inimigos
+				if(matrizCampo[i][j] == 6){
+					continue;
+				}
+				auxRand = rand()%200;
+				if(auxRand%2 != 0){
+					coordY = 120 - (i*10);
+					coordX = j*10; 
+					Blocos[i][j].setInteiro(true);
+					matrizCampo[i][j] = 3;
+					Blocos[i][j].setando(coordX,coordY);
+					Blocos[i][j].desenhar();
+				}
+			}
 		}
 		
 	}
 
+	void zerarQuebraveis(){
+		int i,j;
+		for(i=1;i<12;i++){
+			for(j=1;j<30;j++){				
+				if(i==1 && j==1){
+					continue;
+				}				
+				if(i==2 && j == 1){
+					continue;
+				}			
+				if(i==1 && j==2){
+					continue;
+				}				
+				if(i%2 == 0 && j%2==0){
+					continue;
+				}								
+				if(matrizCampo[i][j] == 6){
+					continue;
+				}				
+					Blocos[i][j].setInteiro(false);
+					matrizCampo[i][j] = 0;
+					Blocos[i][j].setando(0,0);
+					
+				}
+			}		
+	}
+	
 	void quebrar(int linha,int coluna){
 		Blocos[linha][coluna+1].setInteiro(false); 
 		matrizCampo[linha][coluna+1] = 0;
@@ -180,6 +251,7 @@ public:
 		Blocos[linha-1][coluna].setInteiro(false); 
 		matrizCampo[linha-1][coluna] = 0;
 	}
+	
 	void REdesenharQuebraveis() {
 		int i, j;
 		for (i = 0; i < 12; i++) {
@@ -210,36 +282,6 @@ public:
 		return matrizFixos[x][y];
 	}
 	
-	void faseUm(){
-		int i,j,coordX,coordY;
-		int seguidos;
-		int auxRand;
-		
-			srand((unsigned)time(0));
-		for(i=1;i<12;i++){
-			for(j=1;j<30;j++){
-				if(i==1 && j==1){
-					continue;
-				}
-				if(i==2 && j == 1){
-					continue;
-				}
-				if(i%2 == 0 && j%2==0){
-					continue;
-				}
-				
-				auxRand = rand()%200;
-				if(auxRand%2 != 0){
-					coordY = 120 - (i*10);
-					coordX = j*10; 
-					Blocos[i][j].setInteiro(true);
-					matrizCampo[i][j] = 3;
-					Blocos[i][j].setando(coordX,coordY);
-					Blocos[i][j].desenhar();
-				}
-			}
-		}
-	}
 };
 
 //criar mais fases // talvez....

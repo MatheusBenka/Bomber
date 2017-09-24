@@ -25,7 +25,7 @@ int cameraX_min = 0;
 //max X 310
 int cameraX_max = 150;
 Jogo jojo;
-int faseAtual = 0;
+
 int auxVoltas;
 bool morreu = false;
 
@@ -41,12 +41,12 @@ void jogo() {
 	
 	if(!morreu){
 	if (Inicio) {
-		jojo.desenharCenario(faseAtual);
+		jojo.desenharCenario();
 		Inicio = false;
 			
 	}else {
 
-		jojo.REdesenharCenario(faseAtual);
+		jojo.REdesenharCenario();
 		
 	}
 	
@@ -62,9 +62,10 @@ void jogo() {
 		glEnd();
 		
 	}
-	if(morreu){
-		glutPostRedisplay(); 	
-	}
+	//if(morreu){
+	//	glutPostRedisplay(); 	
+//	}
+	
 	glutSwapBuffers();
 }
 
@@ -103,10 +104,34 @@ void TeclasEspeciais(int tecla, int x, int y) {
 
 
 void TeclasNormais(unsigned char tecla, int x, int y) {
-
+	bool horizontal;
+	bool vertical;
 	if(!morreu){
-	jojo.colisaoFixos(faseAtual,&blockTOP,&blockDOWN,&blockLEFT,&blockRIGHT);
-	jojo.colisaoQuebraveis(faseAtual,&blockTOP,&blockDOWN,&blockLEFT,&blockRIGHT);
+		
+	jojo.colisaoFixos(&blockTOP,&blockDOWN,&blockLEFT,&blockRIGHT);	
+		
+	switch(tecla){
+		case 'a':
+		case 'A':
+			jojo.colisaoQuebraveis(&blockTOP,&blockDOWN,&blockLEFT,&blockRIGHT,'a');		
+			break;	
+		
+		case 'd':
+		case 'D':
+			jojo.colisaoQuebraveis(&blockTOP,&blockDOWN,&blockLEFT,&blockRIGHT,'d');		
+			break;	
+		case 'w':
+		case 'W':
+			jojo.colisaoQuebraveis(&blockTOP,&blockDOWN,&blockLEFT,&blockRIGHT,'w');		
+			break;	
+		case 's':
+		case 'S':
+			jojo.colisaoQuebraveis(&blockTOP,&blockDOWN,&blockLEFT,&blockRIGHT,'s');		
+			break;	
+		
+	}
+	
+	//jojo.colisaoQuebraveis(&blockTOP,&blockDOWN,&blockLEFT,&blockRIGHT);
 	switch (tecla) {
 	case 27:
 		cameraX_max = 150.0f;
@@ -178,7 +203,19 @@ void TeclasNormais(unsigned char tecla, int x, int y) {
 	resetarBlocks();
 
 	glutPostRedisplay();
+	}	
+	switch (tecla) {
+	case 'r':
+	case 'R':
+		Inicio = true;
+		morreu = false;
+		cameraX_min = 0;
+		cameraX_max = 150;
+		glutPostRedisplay();
+		break;
 	}
+	
+	
 }
 
 

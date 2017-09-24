@@ -4,9 +4,9 @@ class Jogador {
 private:
 	int posicaoX_min, posicaoX_max, posicaoY_max, posicaoY_min, moviX, moviY;
 	bool morto;
+	int linha,coluna;
 public:
 	Jogador() {
-
 		posicaoX_min = 11;
 		posicaoX_max = 19;
 		posicaoY_min = 111;
@@ -14,6 +14,8 @@ public:
 		moviX = 0;
 		moviY = 0;
 		morto = false;
+		linha = 1;
+		coluna = 1;
 	}
 
 	void desenhaBoneco() {
@@ -36,19 +38,49 @@ public:
 		}
 		
 	}
-
-	void setMoviX(int incrementoMovi) {
-		moviX += incrementoMovi;
+		
+	void reset(){		
+		posicaoX_min = 11;
+		posicaoX_max = 19;
+		posicaoY_min = 111;
+		posicaoY_max = 119;
+		moviX = 0;
+		moviY = 0;
+		morto = false;
+		linha = 1;
+		coluna = 1;
 	}
 
+	int getColunaAtual(){
+		return coluna;
+	}
+	
+	int getLinhaAtual(){
+		return linha;
+	}
+	
+	void setLinha(int nova){
+		linha=nova;
+	}
+	
+	void setColuna(int nova){
+		coluna=nova;
+	}
+	
 	void setVida(bool v){
 		morto = v;
 	}
+	
 	bool getVida(){
 		return morto;
 	}
+	
 	void setMoviY(int incrementoMovi) {
 		moviY += incrementoMovi;
+	}
+	
+	void setMoviX(int incrementoMovi) {
+		moviX += incrementoMovi;
 	}
 	
 	int getMiniX(){
@@ -80,14 +112,13 @@ public:
 	}
 	
 	int getLadoEsquerdo(){
-		return posicaoX_min + moviX ;
+		return posicaoX_min + moviX;
 	}
 	
 	int getCima(){
 		return posicaoY_max +moviY;
 	}
-	
-	
+		
 	int getBaixo(){
 		return posicaoY_min +moviY;
 	}

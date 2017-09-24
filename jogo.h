@@ -4,31 +4,38 @@
 
 class Jogo{
 private :
-	campinho campoJogo[3];
+	campinho campoJogo;
 	Jogador player;
 	bool vivo;
 	Bomba bombinha;
 	int auxTempoBomba;
 public :
-	void desenharCenario(int faseAtual){
-		campoJogo[faseAtual].desenharBordas();
-		campoJogo[faseAtual].desenharCenarioFixo();
-		campoJogo[faseAtual].desenharQuebraveis(faseAtual);
+	void desenharCenario(){
+		campoJogo.zerarQuebraveis();
+		player.reset();
+		campoJogo.desenharBordas();
+		campoJogo.desenharCenarioFixo();
+		campoJogo.gerarQuebraveis();
 	}
 	
-	void REdesenharCenario(int faseAtual){
-		campoJogo[faseAtual].desenharBordas();
-		campoJogo[faseAtual].desenharCenarioFixo();
-		campoJogo[faseAtual].REdesenharQuebraveis();
+	void REdesenharCenario( ){
+		campoJogo.desenharBordas();
+		campoJogo.desenharCenarioFixo();
+		campoJogo.REdesenharQuebraveis();
 		if(bombinha.getVivo() && auxTempoBomba>0){
             bombinha.desenha();				
 			auxTempoBomba--;
 			glutPostRedisplay();
 		}else{
-			bombinha.estourar();
-			campoJogo[faseAtual].quebrar(bombinha.getLinha(),bombinha.getColuna());
-			player.setVida(morrer());
-			bombinha.Coordenadas(0,0);
+			if(bombinha.getSetada()){
+				bombinha.estourar();
+				campoJogo.quebrar(bombinha.getLinha(),bombinha.getColuna());
+				player.setVida(morrer());
+				bombinha.Coordenadas(0,0);
+				bombinha.setVivo(false);
+				bombinha.setSetada(false);
+				glutPostRedisplay();
+			}
 			
 		}
 	}
@@ -39,11 +46,24 @@ public :
 	}
 	
 	bool morrer(){
-		if(bombinha.getLinha() == qualLinhaTaOPlayerCampoTodo() && bombinha.getColuna() ==  qualColunaTaOPlayerCampoTodo()){
+		if(bombinha.getLinha() == player.getLinhaAtual() && bombinha.getColuna() ==  player.getColunaAtual()){
 			return true;
-		}else{
-			return false;
 		}
+		if(bombinha.getLinha()+1 ==player.getLinhaAtual() && bombinha.getColuna() ==  player.getColunaAtual() ){
+			return true;
+		}
+		if(bombinha.getLinha()-1 ==player.getLinhaAtual() && bombinha.getColuna() ==  player.getColunaAtual() ){
+			return true;
+		}
+		if(bombinha.getLinha() == player.getLinhaAtual() && bombinha.getColuna()+1 ==  player.getColunaAtual()){
+			return true;
+		}
+		if(bombinha.getLinha() == player.getLinhaAtual() && bombinha.getColuna()-1 ==  player.getColunaAtual()){
+			return true;
+		}
+		
+			return false;
+		
 	}
 	
 	void setMoviX(int incrementoMovi) {
@@ -54,24 +74,24 @@ public :
 		player.setMoviY(incrementoMovi);
 	}
 
-	void colisaoFixos(int faseAtual, bool * top,bool * down,bool * left,bool * right){	
+	void colisaoFixos(bool * top,bool * down,bool * left,bool * right){	
 		Fixo matriz [5][14];
 		int i,linha,coluna;
 				
 		for(i=0;i<14;i++){
-			matriz[0][i] = campoJogo[faseAtual].getLinhaFixo(0,i);
+			matriz[0][i] = campoJogo.getLinhaFixo(0,i);
 		}
 		for(i=0;i<14;i++){
-			matriz[1][i] = campoJogo[faseAtual].getLinhaFixo(1,i);
+			matriz[1][i] = campoJogo.getLinhaFixo(1,i);
 		}
 		for(i=0;i<14;i++){
-			matriz[2][i] = campoJogo[faseAtual].getLinhaFixo(2,i);
+			matriz[2][i] = campoJogo.getLinhaFixo(2,i);
 		}
 		for(i=0;i<14;i++){
-			matriz[3][i] = campoJogo[faseAtual].getLinhaFixo(3,i);
+			matriz[3][i] = campoJogo.getLinhaFixo(3,i);
 		}
 		for(i=0;i<14;i++){
-			matriz[4][i] = campoJogo[faseAtual].getLinhaFixo(4,i);
+			matriz[4][i] = campoJogo.getLinhaFixo(4,i);
 		}
 		
 		
@@ -130,24 +150,25 @@ public :
 				
 	}
 	
-	void colisaoQuebraveis(int faseAtual, bool * top,bool * down,bool * left,bool * right){	
+	void colisaoQuebraveis(bool * top,bool * down,bool * left,bool * right,char sentido){	
 		int matriz [31];
 		int i,linha,coluna;
 				
 		
-		linha = qualLinhaTaOPlayerCampoTodo();
-		coluna = qualColunaTaOPlayerCampoTodo();
-				
+		linha = qualLinhaTaOPlayerCampoTodo(sentido);
+		coluna = qualColunaTaOPlayerCampoTodo(sentido);
+		player.setLinha(linha);		
+		player.setColuna(coluna);
 		//resolver linha e coluna 0 0
-		printf("eh daqui linha : %d coluna : %d\n",linha,coluna);  
+		printf("aqui ta o player linha : %d coluna : %d\n",linha,coluna);  
 		
-		if(campoJogo[faseAtual].getMatrizCampo(linha,coluna+1) == 3 )
+		if(campoJogo.getMatrizCampo(linha,coluna+1) == 3 )
 			*right = true;
-		if(campoJogo[faseAtual].getMatrizCampo(linha,coluna-1)==3)
+		if(campoJogo.getMatrizCampo(linha,coluna-1)==3)
 			*left = true;
-		if(campoJogo[faseAtual].getMatrizCampo(linha+1,coluna)==3)
+		if(campoJogo.getMatrizCampo(linha+1,coluna)==3)
 			*down = true;
-		if(campoJogo[faseAtual].getMatrizCampo(linha-1,coluna)==3)
+		if(campoJogo.getMatrizCampo(linha-1,coluna)==3)
 			*top = true;
 				
 	}
@@ -187,9 +208,10 @@ public :
 	void dropBomb(){
 		
 		bombinha.setando(player.getLadoEsquerdo(),player.getBaixo());
-		bombinha.Coordenadas(qualColunaTaOPlayerCampoTodo(),qualLinhaTaOPlayerCampoTodo());
+		bombinha.Coordenadas(player.getColunaAtual(),player.getLinhaAtual());
 		bombinha.MostrarCoordenadas();
 		auxTempoBomba = 150;
+		bombinha.setSetada(true);
 	}
 	
 	int qualLinhaFixosTaOPlayer(){
@@ -213,70 +235,43 @@ public :
 		for(i=30,j=0;i<300;i+=20,j++){
 			if(player.getLadoEsquerdo() <=i)
 				return j;
-		}
-		//acho q melhorou kkkk
-		/*
-		if(player.getLadoEsquerdo() <=30)
-			return 0;
-		if(player.getLadoEsquerdo() >30 && player.getLadoEsquerdo() <=50)
-			return 1;
-		if(player.getLadoEsquerdo() > 50 && player.getLadoEsquerdo() <=70)
-			return 2;
-		if(player.getLadoEsquerdo() > 70 && player.getLadoEsquerdo() <=90)
-			return 3;
-		if(player.getLadoEsquerdo() > 90 && player.getLadoEsquerdo() <=110)
-			return 4;
-		if(player.getLadoEsquerdo() > 110 && player.getLadoEsquerdo() <=130)
-			return 5;
-		if(player.getLadoEsquerdo() > 130 && player.getLadoEsquerdo() <=150)
-			return 6;
-		if(player.getLadoEsquerdo() > 150 && player.getLadoEsquerdo() <=170)
-			return 7;
-		if(player.getLadoEsquerdo() > 170 && player.getLadoEsquerdo() <=190)
-			return 8;
-		if(player.getLadoEsquerdo() > 190 && player.getLadoEsquerdo() <=210)
-			return 9;
-		if(player.getLadoEsquerdo() > 210 && player.getLadoEsquerdo() <=230)
-			return 10;
-		if(player.getLadoEsquerdo() > 230 && player.getLadoEsquerdo() <=250)
-			return 11;
-		if(player.getLadoEsquerdo() > 250 && player.getLadoEsquerdo() <=270)
-			return 12;
-		if(player.getLadoEsquerdo() > 270 && player.getLadoEsquerdo() <=290)
-			return 13;
-		if(player.getLadoEsquerdo() > 290)
-			return 14;
-		*/
+		}		
 	}
 	
-	int qualLinhaTaOPlayerCampoTodo(){
+	int qualLinhaTaOPlayerCampoTodo(char sentido){
 		int i,j;
 		
 		if(player.getCima()>=110 ){
-			return 1;	
+			return 1;
+		}
+		if(player.getCima()<=20){
+			return 11;
 		}else{
 				for(i=100,j=2;i>10;i-=10,j++){
-					if(player.getBaixo()>=i && player.getCima() <=i+10){						
+					if(player.getBaixo()>i && player.getCima() <i+10){						
 							return j;
 					}		
 			}
 		}
-	
+		return player.getLinhaAtual();
 	}
 	
-	int qualColunaTaOPlayerCampoTodo(){
+	int qualColunaTaOPlayerCampoTodo(char sentido){
 		int i,j;
 		
-		if(player.getLadoDireito()<20 ){
+		if(player.getLadoEsquerdo()<=20 ){
 			return 1;	
+		}
+		if(player.getLadoEsquerdo()>=290){
+			return 29;
 		}else{
 				for(i=20,j=2;i<=290;i+=10,j++){
-					if(player.getLadoEsquerdo()>i && player.getLadoDireito() <i+10){						
+					if(player.getLadoEsquerdo()>i && player.getLadoDireito()<=i+10){						
 							return j;
 					}		
 			}
 		}
-	
+		return player.getColunaAtual();
 	}
 	
 	bool testarMoviHoriz(Fixo parede){
@@ -313,4 +308,3 @@ public :
 		return player.getLadoDireito();
 	}
 };
-		

@@ -19,12 +19,15 @@ public :
 	int getMini_x() {
 		return mini_X;
 	}
+	
 	int getMini_y() {
 		return mini_Y;
 	}
+	
 	int getMax_x() {
 		return max_X;
 	}
+	
 	int getMax_y() {
 		return max_Y;
 	}
