@@ -15,13 +15,18 @@ public :
 		player.reset();
 		campoJogo.desenharBordas();
 		campoJogo.desenharCenarioFixo();
+		campoJogo.gerarInimigos();		
 		campoJogo.gerarQuebraveis();
+		
 	}
 	
 	void REdesenharCenario( ){
 		campoJogo.desenharBordas();
 		campoJogo.desenharCenarioFixo();
+		//campoJogo.inimigosAndar();
+		campoJogo.desenharInimigos();
 		campoJogo.REdesenharQuebraveis();
+		
 		if(bombinha.getVivo() && auxTempoBomba>0){
             bombinha.desenha();				
 			auxTempoBomba--;
@@ -31,6 +36,7 @@ public :
 				bombinha.estourar();
 				campoJogo.quebrar(bombinha.getLinha(),bombinha.getColuna());
 				player.setVida(morrer());
+				//matarInimigos();
 				bombinha.Coordenadas(0,0);
 				bombinha.setVivo(false);
 				bombinha.setSetada(false);
@@ -42,6 +48,7 @@ public :
 	
 	bool jojar() {
 		player.desenhaBoneco();
+		player.setVida(colisaoInimigos());
 		return player.getVida();
 	}
 	
@@ -150,13 +157,13 @@ public :
 				
 	}
 	
-	void colisaoQuebraveis(bool * top,bool * down,bool * left,bool * right,char sentido){	
+	void colisaoQuebraveis(bool * top,bool * down,bool * left,bool * right){	
 		int matriz [31];
 		int i,linha,coluna;
 				
 		
-		linha = qualLinhaTaOPlayerCampoTodo(sentido);
-		coluna = qualColunaTaOPlayerCampoTodo(sentido);
+		linha = qualLinhaTaOPlayerCampoTodo();
+		coluna = qualColunaTaOPlayerCampoTodo();
 		player.setLinha(linha);		
 		player.setColuna(coluna);
 		//resolver linha e coluna 0 0
@@ -171,6 +178,17 @@ public :
 		if(campoJogo.getMatrizCampo(linha-1,coluna)==3)
 			*top = true;
 				
+	}
+	
+	bool colisaoInimigos(){
+		int i;
+		for(i=0;i<5;i++){
+			
+			if(campoJogo.retornaColunaInimigo(i) == player.getColunaAtual()&& player.getLinhaAtual() == campoJogo.retornaLinhaInimigo(i)){				
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	bool colisaoBORDALeft(int valor){
@@ -238,7 +256,7 @@ public :
 		}		
 	}
 	
-	int qualLinhaTaOPlayerCampoTodo(char sentido){
+	int qualLinhaTaOPlayerCampoTodo(){
 		int i,j;
 		
 		if(player.getCima()>=110 ){
@@ -256,7 +274,7 @@ public :
 		return player.getLinhaAtual();
 	}
 	
-	int qualColunaTaOPlayerCampoTodo(char sentido){
+	int qualColunaTaOPlayerCampoTodo(){
 		int i,j;
 		
 		if(player.getLadoEsquerdo()<=20 ){

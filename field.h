@@ -74,6 +74,21 @@ public:
 
 	}
 	
+	void mostrarMatrizCampoSegundaParte() {
+		int i, j;
+		printf("matriz do campo 2\n");
+		for (i = 0; i <13; i++)
+		{
+			for (j = 14; j<31; j++)
+			{
+				printf(" %d ",matrizCampo[i][j]);
+			}
+			printf("\n");
+		}
+
+
+	}
+	
 	void desenharBordas() {
 		int i;
 
@@ -155,19 +170,106 @@ public:
 }
 	
 	void gerarInimigos(){
-		int i,j;
-		
-		for(i=14,j=0;i<30;i++){
+		int i,j,k,auxRand;		
+		for(i=14;i<30;i++){
 			srand((unsigned)time(0));
-			if(rand()%5 == 3){
-				doMal[j].setando(110,j*10,1,j);
+		
+			if((rand()%5)%2 == 0 || i == 29){			
+				printf("foi o 1");
+				doMal[0].setando(110,i*10,1,i,true);
+				break; 	
+			}
+			
+		}
+		
+		// atualizar matriz com as coordenadas do inimigo
+		j=i-1;
+		for(i=0;i<3;i++){
+			printf("pondo 6 na [1] [%d]\n",j);
+			matrizCampo[1][j++] = 6;			
+		}			
+			
+		
+		for(i=3;i<16;i++){
+			srand((unsigned)time(0));
+			if(i%2==0){
+				continue;
+			}
+			if((rand()%7)%2 == 0 || i==15){		
+				printf("foi o 2");
+				doMal[1].setando(80,i*10,4,i,false);
 				break; 	
 			}
 		}
 		
 		
+		// atualizar matriz com as coordenadas do inimigo
+		(i>15?k=15:k=i);
+		//if(i>15) k=15; else k = i;
+		printf("ta pondo no k %d\n",k);
+		for(i=0,j=3;i<3;i++,j++){
+			printf("pondo 6 tbm na [%d] [%d]\n",j,k);
+			matrizCampo[j][k] = 6;
+		}	
+			
+		for(i=15;i<28;i++){
+			srand((unsigned)time(0));
+			if(i%2==0){
+				continue;
+			}
+			if((rand()%7)%2 == 0 || i==27){		
+				printf("foi o 2");
+				doMal[2].setando(80,i*10,4,i,false);
+				break; 	
+			}
+		}
+		
+		
+		// atualizar matriz com as coordenadas do inimigo
+		(i>15?k=15:k=i);
+		//if(i>15) k=15; else k = i;
+		printf("ta pondo no k %d\n",k);
+		for(i=0,j=3;i<3;i++,j++){
+			printf("pondo 6 tbm na [%d] [%d]\n",j,k);
+			matrizCampo[j][k] = 6;
+		}	
+		
+		for(i=9;i<22;i++){
+			srand((unsigned)time(0));
+			if((rand()%9)%2 == 0 || i == 21){				
+				printf("foi o 3");
+				doMal[3].setando(50,i*10,7,j,true);
+				break; 	
+			}
+		}		
+		j=i-1;
+		for(i=0;i<3;i++)			
+			matrizCampo[7][j++] = 6;
+		
+		
+		for(i=1;i<17;i++){
+			srand((unsigned)time(0));
+			if((rand()%9)%2 == 0 || i == 16){				
+				printf("foi o 3");
+				doMal[4].setando(10,i*10,11,j,true);
+				break; 	
+			}
+		}		
+		j=i-1;
+		for(i=0;i<3;i++)			
+			matrizCampo[7][j++] = 6;
 	}
-	
+
+	void desenharInimigos(){
+		int i;
+		for(i=0;i<5;i++){	
+			if(doMal[i].getVivo()){
+				doMal[i].desenhar();
+			}
+			
+		}
+	}
+
 	void gerarQuebraveis() {
 		int i,j,coordX,coordY;
 		int seguidos;
@@ -195,6 +297,7 @@ public:
 				
 				//nao criar quebraveis onde tem inimigos
 				if(matrizCampo[i][j] == 6){
+					printf("ta entrando aqui senhor\n");
 					continue;
 				}
 				auxRand = rand()%200;
@@ -263,7 +366,9 @@ public:
 			}
 
 		}
-		//mostrarMatrizCampo();
+		mostrarMatrizCampo();
+		printf("\n");
+		mostrarMatrizCampoSegundaParte();
 	}
 	
 	void setValorMatrizCampo(int x,int y,int valor){
@@ -274,8 +379,15 @@ public:
 		return matrizCampo[x][y];
 	}
 	
-	Fixo getFixo(int x, int y){
-		return matrizFixos[x][y];
+	//Fixo getFixo(int x, int y){
+	//	return matrizFixos[x][y];
+	//}
+	int retornaLinhaInimigo(int qual){
+		return doMal[qual].getLinhaAtual();		
+	}
+	
+	int retornaColunaInimigo(int qual){
+		return doMal[qual].getColunaAtual();		
 	}
 	
 	Fixo getLinhaFixo(int x,int y){

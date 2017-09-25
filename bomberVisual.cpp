@@ -77,6 +77,7 @@ void resetarBlocks(){
     blockRIGHT = false;
 
 }
+
 void TeclasEspeciais(int tecla, int x, int y) {
 	if(!morreu){
 		switch (tecla) {
@@ -109,29 +110,8 @@ void TeclasNormais(unsigned char tecla, int x, int y) {
 	if(!morreu){
 		
 	jojo.colisaoFixos(&blockTOP,&blockDOWN,&blockLEFT,&blockRIGHT);	
-		
-	switch(tecla){
-		case 'a':
-		case 'A':
-			jojo.colisaoQuebraveis(&blockTOP,&blockDOWN,&blockLEFT,&blockRIGHT,'a');		
-			break;	
-		
-		case 'd':
-		case 'D':
-			jojo.colisaoQuebraveis(&blockTOP,&blockDOWN,&blockLEFT,&blockRIGHT,'d');		
-			break;	
-		case 'w':
-		case 'W':
-			jojo.colisaoQuebraveis(&blockTOP,&blockDOWN,&blockLEFT,&blockRIGHT,'w');		
-			break;	
-		case 's':
-		case 'S':
-			jojo.colisaoQuebraveis(&blockTOP,&blockDOWN,&blockLEFT,&blockRIGHT,'s');		
-			break;	
-		
-	}
+	jojo.colisaoQuebraveis(&blockTOP,&blockDOWN,&blockLEFT,&blockRIGHT);
 	
-	//jojo.colisaoQuebraveis(&blockTOP,&blockDOWN,&blockLEFT,&blockRIGHT);
 	switch (tecla) {
 	case 27:
 		cameraX_max = 150.0f;
